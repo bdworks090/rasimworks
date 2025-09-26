@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BD GMAIL Work - ইনকাম লিস্ট</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Noto+Sans+Bengali&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tiro Bangla', 'Noto Sans Bengali', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            color: #fff;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+        }
+        
+        .last-update-bar {
+            background: linear-gradient(135deg, #ff8c00, #ff5500);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transform-style: preserve-3d;
+        }
+        
+        .last-update-bar::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 60%);
+            animation: shimmer 6s infinite linear;
+            transform: translateZ(10px);
+        }
+        
+        .update-text {
+            position: relative;
+            transform: translateZ(5px);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .update-time {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            transform: translateZ(8px);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 60%);
+            animation: shimmer 6s infinite linear;
+            transform: translateZ(30px);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            position: relative;
+            animation: slideDown 0.8s ease-out;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            transform: translateZ(20px);
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+            position: relative;
+            animation: slideUp 0.8s ease-out;
+            transform: translateZ(15px);
+        }
+        
+        .content-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .client-info {
+            background: rgba(0, 114, 255, 0.15);
+            padding: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex: 1;
+            min-width: 300px;
+            animation: fadeIn 1s ease-out;
+            transform-style: preserve-3d;
+        }
+        
+        .client-details h2 {
+            color: #00c6ff;
+            margin-bottom: 15px;
+            font-size: 24px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            transform: translateZ(15px);
+        }
+        
+        .client-details p {
+            font-size: 18px;
+            margin: 8px 0;
+            transform: translateZ(10px);
+        }
+        
+        .summary-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            gap: 15px;
+        }
+        
+        .summary-item-top {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: bounceIn 1s ease-out;
+            transform: translateZ(15px);
+            transition: transform 0.3s ease;
+        }
+        
+        .summary-item-top:hover {
+            transform: translateZ(20px) scale(1.05);
+            background: linear-gradient(135deg, #00c6ff, #0052cc);
+        }
+
+        /* DM Telegram Button Styling */
+        .telegram-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #0088cc, #34b7f1);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4);
+            transition: all 0.3s ease;
+            transform: translateZ(15px);
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .telegram-button:hover {
+            background: linear-gradient(135deg, #0077b5, #2aa8e0);
+            transform: translateZ(20px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(0, 136, 204, 0.6);
+        }
+
+        .telegram-button i {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .telegram-note {
+            margin-top: 12px;
+            font-size: 16px;
+            color: #c0e6ff;
+            text-align: center;
+            line-height: 1.4;
+            font-weight: 500;
+            transform: translateZ(5px);
+        }
+
+        .income-section {
+            flex: 2;
+            min-width: 300px;
+            padding: 25px;
+            transform-style: preserve-3d;
+            overflow-x: auto;
+        }
+        
+        .income-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateZ(10px);
+            min-width: 500px;
+        }
+        
+        .income-table th {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 18px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            transform: translateZ(15px);
+        }
+        
+        .income-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInRow 0.6s ease-out forwards;
+            opacity: 0;
+            transform: translateY(10px) rotateX(5deg);
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease;
+        }
+        
+        .income-table tr:hover {
+            transform: translateY(-2px) rotateX(0deg) scale(1.02);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .income-table tr:nth-child(1) { animation-delay: 0.1s; }
+        .income-table tr:nth-child(2) { animation-delay: 0.2s; }
+        .income-table tr:nth-child(3) { animation-delay: 0.3s; }
+        
+        .income-table td {
+            padding: 22px 20px;
+            font-size: 18px;
+            transform-style: preserve-3d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+        
+        .email-cell {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .email-address {
+            font-weight: 600;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .email-status {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            color: #00ff8c;
+        }
+        
+        .status-offline {
+            color: #ff4757;
+        }
+        
+        .amount-cell {
+            font-weight: bold;
+            color: #00ff8c;
+            text-align: right;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            transform: translateZ(10px);
+        }
+        
+        .separator {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .separator td {
+            padding: 10px;
+            font-size: 16px;
+            transform: translateZ(5px);
+        }
+        
+        .loading {
+            color: #ffcc00 !important;
+            animation: pulse 1.5s infinite;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+        }
+        
+        /* 3D Animations */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0;
+                transform: translateZ(-50px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateZ(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from { 
+                transform: translateY(-30px) translateZ(-20px);
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0) translateZ(0);
+                opacity: 1; 
+            }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                transform: translateY(30px) translateZ(-20px);
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0) translateZ(0);
+                opacity: 1; 
+            }
+        }
+        
+        @keyframes fadeInRow {
+            from { 
+                opacity: 0;
+                transform: translateY(20px) rotateX(15deg);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+        
+        @keyframes pulse {
+            0% { 
+                transform: translateZ(20px) scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+            50% { 
+                transform: translateZ(25px) scale(1.05);
+                box-shadow: 0 8px 25px rgba(0, 198, 255, 0.4);
+            }
+            100% { 
+                transform: translateZ(20px) scale(1);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            }
+        }
+        
+        @keyframes bounceIn {
+            0% { 
+                transform: translateZ(-50px) scale(0.8); 
+                opacity: 0; 
+            }
+            50% { 
+                transform: translateZ(25px) scale(1.1); 
+                opacity: 0.8; 
+            }
+            100% { 
+                transform: translateZ(20px) scale(1); 
+                opacity: 1; 
+            }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: rotate(0deg) translateZ(30px); }
+            100% { transform: rotate(360deg) translateZ(30px); }
+        }
+        
+        @keyframes coinSpin {
+            0% { transform: rotateY(0deg) translateZ(10px); }
+            100% { transform: rotateY(360deg) translateZ(10px); }
+        }
+        
+        .coin {
+            display: inline-block;
+            animation: coinSpin 3s infinite linear;
+            margin-left: 10px;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .income-table {
+                font-size: 16px;
+                min-width: 100%;
+            }
+            
+            .income-table th, 
+            .income-table td {
+                padding: 15px 12px;
+                font-size: 14px;
+                max-width: 150px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .summary-top {
+                flex-direction: column;
+            }
+            
+            .summary-item-top {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .last-update-bar {
+                flex-direction: column;
+                gap: 5px;
+                padding: 8px;
+            }
+            
+            .income-section {
+                overflow-x: auto;
+            }
+            
+            .telegram-button {
+                font-size: 20px;
+                padding: 18px;
+            }
+            
+            .telegram-button i {
+                font-size: 24px;
+            }
+            
+            .telegram-note {
+                font-size: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header p {
+                font-size: 16px;
+            }
+            
+            .client-info, .income-section {
+                padding: 15px;
+            }
+            
+            .income-table th, 
+            .income-table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+            
+            .telegram-button {
+                font-size: 18px;
+                padding: 16px;
+            }
+            
+            .telegram-button i {
+                font-size: 22px;
+            }
+            
+            .telegram-note {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- নতুন লাস্ট আপডেট বার -->
+        <div class="last-update-bar">
+            <span class="update-text"><i class="fas fa-sync-alt"></i> LAST UPDATE </span>
+            <span class="update-time" id="manual-update-time">26 September, 2025 - 5:30 pm</span>
+        </div>
+
+        <div class="header">
+            <h1><i class="fab fa-gmail"></i> BD GMAIL Work</h1>
+            <p>জমাকৃত জিমেইলের ইনকাম লিস্ট</p>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="client-info">
+                <div class="client-details">
+                    <h2><i class="fas fa-user"></i> ক্লায়েন্ট তথ্য</h2>
+                    <p><strong>নাম:</strong>  RASIM</p>
+                    <p><strong>আইডি:</strong> RASIMBDGMAIL.COM</p>
+                    
+                    <!-- উপরের দিকে সামারি আইটেম -->
+                    <div class="summary-top">
+                        <div class="summary-item-top">
+                            <i class="fas fa-check-circle"></i>ACTIVE: 0 / HOLD: 2 / BAN: 0
+                        </div>
+                        <div class="summary-item-top">
+                            <i class="fas fa-coins"></i> Total = 16 টাকা <span class="coin">💸</span>
+                        </div>
+                    </div>
+
+                    <!-- DM Telegram Button -->
+                    <a href="https://t.me/tokan45" class="telegram-button" target="_blank">
+                        <i class="fab fa-telegram-plane"></i> DM TELEGRAM
+                    </a>
+                    <p class="telegram-note">টাকা উত্তোলন করতে হলে এডমিনের সাথে যোগাযোগ করুন</p>
+                </div>
+            </div>
+
+            <div class="income-section">
+                <table class="income-table">
+                    <thead>
+                        <tr>
+                            <th>নম্বর</th>
+                            <th style="text-align: right;">বোনাস টাকা</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- জিমেইল এন্ট্রি ১ -->
+                        <tr>
+                            <td class="email-cell">
+                                <div class="email-address">1) ayihozayow44@gmail.com</div>
+                                <div class="email-status status-active">Hold:28.09.25, 15:46</div>
+                            </td>
+                            <td class="amount-cell">8 টাকা <span class="coin">💸</span></td>
+                        </tr>
+                        <tr class="separator">
+                            <td colspan="2">—-------------------------------------------------------------</td>
+                        </tr>
+                        
+                        <!-- জিমেইল এন্ট্রি ২ -->
+                        <tr>
+                            <td class="email-cell">
+                                <div class="email-address">2) izohijodom891@gmail.com</div>
+                                <div class="email-status status-active">Hold:28.09.25, 15:35</div>
+                            </td>
+                            <td class="amount-cell">8 টাকা <span class="coin">💸</span></td>
+                        </tr>
+                        <tr class="separator">
+                            <td colspan="2">—-------------------------------------------------------------</td>
+                        </tr>
+                        
+                        <!-- জিমেইল এন্ট্রি ৩ -->
+                        <tr>
+                            <td class="email-cell">
+                                <div class="email-address">3) example@gmail.com</div>
+                                <div class="email-status status-offline">Loding</div>
+                            </td>
+                            <td class="amount-cell">0 টাকা <span class="coin">💸</span></td>
+                        </tr>
+                        
+                        <!-- নতুন জিমেইল যোগ করতে চাইলে এই অংশটি কপি করে নিচে পেস্ট করুন -->
+                        <!--
+                        <tr class="separator">
+                            <td colspan="2">—-------------------------------------------------------------</td>
+                        </tr>
+                        <tr>
+                            <td class="email-cell">
+                                <div class="email-address">4) নতুন জিমেইল এখানে লিখুন</div>
+                                <div class="email-status status-active">Status: এখানে লিখুন</div>
+                            </td>
+                            <td class="amount-cell">0 টাকা <span class="coin">💸</span></td>
+                        </tr>
+                        -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // সরলীকৃত স্ক্রিপ্ট - শুধুমাত্র আপডেট সময় দেখানোর জন্য
+        document.addEventListener('DOMContentLoaded', function() {
+            // DM Telegram বাটনে ক্লিক ইভেন্ট যোগ করা
+            const telegramButton = document.querySelector('.telegram-button');
+            telegramButton.addEventListener('click', function() {
+                console.log('Redirecting to Telegram...');
+            });
+            
+            // আপডেট তারিখ ও সময়
+            const updateTimeElement = document.getElementById('manual-update-time');
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            updateTimeElement.textContent = now.toLocaleDateString('bn-BD', options);
+            
+            // কনসোলে লগ
+            console.log('BD Gmail Work Income List Ready!');
+            console.log('Total Balance: 16 টাকা (Manually set)');
+        });
+    </script>
+</body>
+</html>
